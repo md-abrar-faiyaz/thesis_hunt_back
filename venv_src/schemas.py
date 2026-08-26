@@ -20,7 +20,7 @@ class FacultyRegisterRequest(BaseModel):
     password: str
     gender: Optional[str] = 'Other'
     fac_initial: str
-    designation: str  # renamed from 'rank' to avoid MySQL 8+ reserved keyword conflict
+    rank: str
     ug_pg: str
     sem_free_from: Optional[str] = ''
     max_grp_per_sem: int = 3

@@ -102,9 +102,9 @@ def register_faculty(req: FacultyRegisterRequest):
 
         cursor.execute(
             """INSERT INTO Faculty 
-               (faculty_id, Fac_initial, rank, UG_PG, sem_free_from, max_grp_per_sem, total_supervised, room_no, calendar_link, work_on_domain) 
+               (faculty_id, Fac_initial, `rank`, UG_PG, sem_free_from, max_grp_per_sem, total_supervised, room_no, calendar_link, work_on_domain) 
                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);""",
-            (uid, req.fac_initial, req.rank, req.ug_pg, req.sem_free_from, req.max_grp_per_sem, req.total_supervised, req.room_no, req.calendar_link, domain_id)
+            (uid, req.fac_initial, req.designation, req.ug_pg, req.sem_free_from, req.max_grp_per_sem, req.total_supervised, req.room_no, req.calendar_link, domain_id)
         )
 
         conn.commit()
