@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from routers import auth, inspector
+from routers import auth, inspector, student
 
 app = FastAPI(title="Thesis Hunt API")
 
@@ -23,6 +23,7 @@ app.add_middleware(
 # Register modular API routers
 app.include_router(inspector.router)
 app.include_router(auth.router)
+app.include_router(student.router)
 
 
 if __name__ == "__main__":

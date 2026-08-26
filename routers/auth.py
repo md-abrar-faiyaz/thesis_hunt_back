@@ -64,9 +64,9 @@ def register_student(req: StudentRegisterRequest):
 
         cursor.execute(
             """INSERT INTO Student 
-               (student_id, CGPA, credits_completed, has_done_thesis, preferred_domain) 
-               VALUES (%s, %s, %s, %s, %s);""",
-            (uid, req.cgpa, req.credits_completed, req.has_done_thesis, domain_id)
+               (student_id, CGPA, credits_completed, has_done_thesis, preferred_domain, sem_no) 
+               VALUES (%s, %s, %s, %s, %s, %s);""",
+            (uid, req.cgpa, req.credits_completed, req.has_done_thesis, domain_id, req.sem_no)
         )
 
         conn.commit()

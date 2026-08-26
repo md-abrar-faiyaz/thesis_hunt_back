@@ -9,6 +9,7 @@ class StudentRegisterRequest(BaseModel):
     gender: Optional[str] = 'Other'
     cgpa: float
     credits_completed: int
+    sem_no: Optional[int] = 1
     has_done_thesis: bool = False
     domain_name: Optional[str] = None
 
