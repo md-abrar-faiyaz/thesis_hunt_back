@@ -33,3 +33,26 @@ class FacultyRegisterRequest(BaseModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+
+class BlogPostCreateRequest(BaseModel):
+    title: str
+    content: str
+    posted_by: int
+    domain_name: Optional[str] = None
+
+
+class AuthorInput(BaseModel):
+    author_id: int
+    author_order: int
+
+
+class PublicationCreateRequest(BaseModel):
+    title: str
+    journal_category: Optional[str] = None
+    publication_date: Optional[str] = None
+    link: Optional[str] = None
+    domain_name: Optional[str] = None
+    authors: list[AuthorInput] = []
+
+
