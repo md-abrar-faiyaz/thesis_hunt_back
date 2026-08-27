@@ -13,13 +13,7 @@ def search_students(
     gender: Optional[str] = None,
     sort_by: Optional[List[str]] = Query(None)
 ):
-    """
-    Search students based on specification #6 in INTERFACES.md:
-    - Search by name, student id (u.UID), or preferred domain name.
-    - Filter by has_completed_thesis (s.has_done_thesis), available_only (s.thesis_group IS NULL), and gender.
-    - Sort by CGPA, completed credits, number of publications, semesters completed (sem_no - 1) in DESCENDING order via checkboxes.
-    - Default sort if no checkbox checked: u.UID ASC.
-    """
+
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
@@ -171,13 +165,7 @@ def search_faculties(
     designations: Optional[List[str]] = Query(None),
     sort_by: Optional[List[str]] = Query(None)
 ):
-    """
-    Search faculties based on specification #7 in INTERFACES.md:
-    - Search using faculty name, initial (f.Fac_initial), research domain (d.domain_name), and semester free from (f.sem_free_from).
-    - Filter by UG, PG or both (f.UG_PG) and designations (f.designation) using checkboxes.
-    - Sort by number of groups supervised and number of publications in DESCENDING order via checkboxes.
-    - Default sort if no checkbox checked: u.UID ASC.
-    """
+
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
