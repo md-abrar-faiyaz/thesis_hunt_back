@@ -56,3 +56,37 @@ class PublicationCreateRequest(BaseModel):
     authors: list[AuthorInput] = []
 
 
+class StudentProfileUpdateRequest(BaseModel):
+    cgpa: float
+    credits_completed: int
+    sem_no: int
+    domain_name: Optional[str] = None
+
+
+class BlogPostUpdateRequest(BaseModel):
+    posted_by: int
+    title: str
+    content: str
+    domain_name: Optional[str] = None
+
+
+class SendMessageRequest(BaseModel):
+    sender_id: int
+    receiver_id: int
+    message_text: str
+
+
+class TaskCreateRequest(BaseModel):
+    task_description: str
+    deadline: Optional[str] = None
+    assigned_to: int
+    assigned_by: int
+
+
+class TaskActionRequest(BaseModel):
+    action: str  # 'accept' | 'reject' | 'complete'
+    user_id: int
+
+
+
+
