@@ -2,7 +2,7 @@ from typing import Optional, List
 from fastapi import APIRouter, Query
 from database import get_db_connection
 from schemas import StudentProfileUpdateRequest
-from routers.auth import resolve_domain_id
+from routers.auth import resolve_domain_id, to_bool
 
 router = APIRouter()
 
@@ -122,6 +122,7 @@ def get_student_profile(student_id: int):
                 u.gender,
                 s.CGPA,
                 s.credits_completed,
+                s.has_done_thesis,
                 s.sem_no,
                 d.domain_name as preferred_domain
             FROM User u
@@ -138,6 +139,7 @@ def get_student_profile(student_id: int):
         if not student:
             return {"status": "error", "message": "Student profile not found."}
 
+        student["has_done_thesis"] = to_bool(student.get("has_done_thesis"))
         sem_no = student.get("sem_no")
         credits_completed = student.get("credits_completed") or 0
 

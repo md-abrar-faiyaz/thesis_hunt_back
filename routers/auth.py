@@ -7,6 +7,17 @@ from schemas import StudentRegisterRequest, FacultyRegisterRequest, LoginRequest
 router = APIRouter(prefix="/api", tags=["Auth & Registration"])
 
 
+def to_bool(val) -> bool:
+    """Helper to convert MySQL bit/tinyint/bytes/str/bool values to standard python bool."""
+    if val is None:
+        return False
+    if isinstance(val, bytes):
+        return int.from_bytes(val, byteorder='little') != 0
+    if isinstance(val, str):
+        return val.lower() in ('true', '1', 'yes')
+    return bool(val)
+
+
 def resolve_domain_id(cursor, domain_name: Optional[str]) -> Optional[int]:
     """Look up an existing domain by name or insert a new record into the Domain table."""
     if not domain_name or not domain_name.strip():
@@ -139,7 +150,7 @@ def login_user(req: LoginRequest):
         has_done_thesis = False
         if student_info:
             role = "Student"
-            has_done_thesis = bool(student_info['has_done_thesis'])
+            has_done_thesis = to_bool(student_info.get('has_done_thesis'))
         else:
             cursor.execute("SELECT faculty_id FROM Faculty WHERE faculty_id = %s LIMIT 1;", (uid,))
             if cursor.fetchone():
