@@ -134,9 +134,12 @@ def login_user(req: LoginRequest):
         uid = user['UID']
         role = "User"
 
-        cursor.execute("SELECT student_id FROM Student WHERE student_id = %s LIMIT 1;", (uid,))
-        if cursor.fetchone():
+        cursor.execute("SELECT student_id, has_done_thesis FROM Student WHERE student_id = %s LIMIT 1;", (uid,))
+        student_info = cursor.fetchone()
+        has_done_thesis = False
+        if student_info:
             role = "Student"
+            has_done_thesis = bool(student_info['has_done_thesis'])
         else:
             cursor.execute("SELECT faculty_id FROM Faculty WHERE faculty_id = %s LIMIT 1;", (uid,))
             if cursor.fetchone():
@@ -144,15 +147,20 @@ def login_user(req: LoginRequest):
 
         cursor.close()
         conn.close()
+        
+        user_payload = {
+            "uid": uid,
+            "name": user['name'],
+            "email": user['email'],
+            "role": role
+        }
+        if role == "Student":
+            user_payload["has_done_thesis"] = has_done_thesis
+
         return {
             "status": "ok",
             "message": "Login successful!",
-            "user": {
-                "uid": uid,
-                "name": user['name'],
-                "email": user['email'],
-                "role": role
-            }
+            "user": user_payload
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}
