@@ -9,8 +9,16 @@ app = FastAPI(title="Thesis Hunt API")
 # Configure CORS for local development and live web hosting
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://thesis-hunt.web.app",
+        "https://thesis-hunt.firebaseapp.com"
+    ],
+    allow_origin_regex=r"https?://.*",
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
