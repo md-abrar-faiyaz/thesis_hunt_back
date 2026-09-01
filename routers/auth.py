@@ -102,8 +102,17 @@ def register_faculty(req: FacultyRegisterRequest):
             conn.close()
             return {"status": "error", "message": "Email is already registered."}
 
+        clean_initial = (req.fac_initial or "").strip().upper()
+        if clean_initial:
+            cursor.execute("SELECT faculty_id FROM Faculty WHERE Fac_initial = %s LIMIT 1;", (clean_initial,))
+            if cursor.fetchone():
+                cursor.close()
+                conn.close()
+                return {"status": "error", "message": f"Faculty initial '{clean_initial}' is already registered."}
+
         domain_id = resolve_domain_id(cursor, req.domain_name)
         hashed_pass = hash_password(req.password)
+        fac_rank = req.designation or req.rank or "Assistant Professor"
 
         cursor.execute(
             "INSERT INTO User (name, email, pass_hash, gender) VALUES (%s, %s, %s, %s);",
@@ -113,10 +122,11 @@ def register_faculty(req: FacultyRegisterRequest):
 
         cursor.execute(
             """INSERT INTO Faculty 
-               (faculty_id, Fac_initial, `rank`, UG_PG, sem_free_from, max_grp_per_sem, total_supervised, room_no, calendar_link, work_on_domain) 
+               (faculty_id, Fac_initial, designation, UG_PG, sem_free_from, max_grp_per_sem, total_supervised, room_no, calendar_link, work_on_domain) 
                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);""",
-            (uid, req.fac_initial, req.designation, req.ug_pg, req.sem_free_from, req.max_grp_per_sem, req.total_supervised, req.room_no, req.calendar_link, domain_id)
+            (uid, clean_initial, fac_rank, req.ug_pg, req.sem_free_from, req.max_grp_per_sem, req.total_supervised, req.room_no, req.calendar_link, domain_id)
         )
+
 
         conn.commit()
         cursor.close()

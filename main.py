@@ -2,23 +2,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from routers import auth, inspector, student
+from routers import auth, inspector, student, faculty
 
 app = FastAPI(title="Thesis Hunt API")
 
 # Configure CORS for local development and live web hosting
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "https://thesis-hunt.web.app",
-        "https://thesis-hunt.firebaseapp.com"
-    ],
-    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:[0-9]+)?",
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -27,6 +19,8 @@ app.add_middleware(
 app.include_router(inspector.router)
 app.include_router(auth.router)
 app.include_router(student.router)
+app.include_router(faculty.router)
+
 
 
 if __name__ == "__main__":

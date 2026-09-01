@@ -20,7 +20,8 @@ class FacultyRegisterRequest(BaseModel):
     password: str
     gender: Optional[str] = 'Other'
     fac_initial: str
-    designation: str  # renamed from 'rank' to avoid MySQL 8+ reserved keyword conflict
+    designation: Optional[str] = 'Assistant Professor'
+    rank: Optional[str] = 'Assistant Professor'
     ug_pg: str
     sem_free_from: Optional[str] = ''
     max_grp_per_sem: int = 3
@@ -28,6 +29,7 @@ class FacultyRegisterRequest(BaseModel):
     room_no: Optional[str] = ''
     calendar_link: Optional[str] = ''
     domain_name: Optional[str] = None
+
 
 
 class LoginRequest(BaseModel):
@@ -156,4 +158,43 @@ class ThesisEditRequest(BaseModel):
     title: str
     description: Optional[str] = None
     domain_name: Optional[str] = None
+
+
+class FacultyProfileUpdateRequest(BaseModel):
+    designation: Optional[str] = None
+    ug_pg: Optional[str] = None
+    sem_free_from: Optional[str] = None
+    max_grp_per_sem: Optional[int] = None
+    room_no: Optional[str] = None
+    calendar_link: Optional[str] = None
+    domain_name: Optional[str] = None
+
+
+class FacultySupervisorResponseRequest(BaseModel):
+    faculty_id: int
+    group_id: int
+    role: Optional[str] = 'supervisor'  # 'supervisor' | 'co-supervisor'
+    action: str  # 'accept' | 'reject'
+    response_message: Optional[str] = None
+    offer_meeting: Optional[bool] = False
+    semester: Optional[str] = 'Summer 2026'
+    sender_id: Optional[int] = None
+    timestamp: Optional[str] = None
+
+
+class FacultyTaskAssignRequest(BaseModel):
+    faculty_id: int
+    group_id: int
+    assigned_to: int
+    task_description: str
+    deadline: Optional[str] = None
+
+
+class FacultyMeetingBookRequest(BaseModel):
+    faculty_id: int
+    group_id: int
+    date: str
+    slot: str
+    link_or_room: Optional[str] = None
+
 
