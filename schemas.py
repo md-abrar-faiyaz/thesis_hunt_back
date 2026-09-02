@@ -198,3 +198,12 @@ class FacultyMeetingBookRequest(BaseModel):
     link_or_room: Optional[str] = None
 
 
+class SupervisorRequestSendRequest(BaseModel):
+    student_id: int
+    faculty_id: int
+    role: Optional[str] = 'Supervisor'
+    semester: Optional[str] = 'Summer 2026'
+    note: Optional[str] = None
+
+
+

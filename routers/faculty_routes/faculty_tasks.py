@@ -38,7 +38,8 @@ def get_faculty_supervised_tasks(faculty_id: int):
             JOIN Supervises sup ON tg.group_id = sup.group_id
             LEFT JOIN Thesis t ON tg.thesis_id = t.thesis_id
             WHERE sup.supervisor_id = %s
-            ORDER BY tk.task_id DESC;
+            -- Sorted by thesis group (s.thesis_group ASC) and then by assignment time (tk.task_id DESC, latest on top)
+            ORDER BY s.thesis_group ASC, tk.task_id DESC;
         """
         cursor.execute(query, (faculty_id,))
         tasks = cursor.fetchall()

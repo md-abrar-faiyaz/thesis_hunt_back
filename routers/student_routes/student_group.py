@@ -11,7 +11,8 @@ from schemas import (
     GroupJoinRequest,
     JoinRequestResponseRequest,
     GroupLeaveRequest,
-    ThesisEditRequest
+    ThesisEditRequest,
+    SupervisorRequestSendRequest
 )
 from routers.auth import resolve_domain_id
 
@@ -813,4 +814,49 @@ def update_thesis_info(group_id: int, req: ThesisEditRequest):
         return {"status": "ok", "message": "Thesis details updated successfully!"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+
+@router.post("/send-supervisor-request")
+def send_supervisor_request(req: SupervisorRequestSendRequest):
+    """
+    Send a supervisor/co-supervisor request to a faculty member's inbox.
+    Checks if student is part of an active thesis group and inserts tag into Contact table.
+    """
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("SELECT thesis_group FROM Student WHERE student_id = %s LIMIT 1;", (req.student_id,))
+        st = cursor.fetchone()
+        if not st or not st.get("thesis_group"):
+            cursor.close()
+            conn.close()
+            return {"status": "error", "message": "First form a group before requesting a supervisor."}
+
+        group_id = st["thesis_group"]
+        role = req.role if req.role in ["Supervisor", "Co-Supervisor"] else "Supervisor"
+        sem = req.semester.strip() if req.semester and req.semester.strip() else "Summer 2026"
+        note = req.note.strip() if req.note else ""
+
+        message_text = f"[Supervisor Request:{group_id}:{role}:{sem}:Pending] {note}"
+
+        cursor.execute(
+            """
+            INSERT INTO Contact (sender_id, receiver_id, message_text, status)
+            VALUES (%s, %s, %s, 'Unread');
+            """,
+            (req.student_id, req.faculty_id, message_text)
+        )
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return {
+            "status": "ok",
+            "message": f"Request to be {role} sent to faculty's inbox successfully!"
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 
